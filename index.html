@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A tiny question with two very important answers."
+    />
+    <title>A little question</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: #512d42;
+        background: #fff3f6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 280px;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 15% 15%, #ffe0e9 0, transparent 38%),
+          radial-gradient(ellipse at 85% 85%, #f9d9ed 0, transparent 40%),
+          #fff7f8;
+      }
+
+      .question-card {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: min(390px, calc(100vw - 32px));
+        padding: 38px 28px 32px;
+        border: 1px solid rgb(255 255 255 / 85%);
+        border-radius: 24px;
+        background: rgb(255 255 255 / 90%);
+        box-shadow: 0 18px 55px rgb(143 75 105 / 16%);
+        text-align: center;
+        transform: translate(-50%, -50%);
+        transition:
+          top 450ms ease,
+          left 450ms ease,
+          transform 450ms ease;
+      }
+
+      .heart {
+        margin: 0 0 12px;
+        font-size: 40px;
+        line-height: 1;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 7vw, 2.2rem);
+      }
+
+      .message {
+        min-height: 26px;
+        margin: 12px 0 24px;
+        color: #896575;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      button {
+        min-width: 112px;
+        padding: 12px 22px;
+        border: 0;
+        border-radius: 999px;
+        font: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          transform 150ms ease,
+          box-shadow 150ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      button:focus-visible {
+        outline: 3px solid #73455e;
+        outline-offset: 3px;
+      }
+
+      .yes-button {
+        color: white;
+        background: #e8799c;
+        box-shadow: 0 5px 14px rgb(232 121 156 / 30%);
+      }
+
+      .no-button {
+        color: #73455e;
+        background: #f8e9ef;
+      }
+
+      @media (max-width: 480px) {
+        .question-card[data-position] {
+          left: 50%;
+          width: min(340px, calc(100vw - 32px));
+          transform: translateX(-50%);
+        }
+
+        .question-card[data-position="top-left"],
+        .question-card[data-position="top-right"] {
+          top: 20px;
+        }
+
+        .question-card[data-position="bottom-left"],
+        .question-card[data-position="bottom-right"] {
+          top: auto;
+          bottom: 20px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="question-card" id="question-card" aria-live="polite">
+      <p class="heart" aria-hidden="true">💌</p>
+      <h1 id="question">Do you miss me?</h1>
+      <p class="message" id="message">Please choose your answer!</p>
+      <div class="buttons" id="buttons">
+        <button class="yes-button" id="yes-button" type="button">Yes</button>
+        <button class="no-button" id="no-button" type="button">No</button>
+      </div>
+    </main>
+
+    <script>
+      const card = document.querySelector("#question-card");
+      const question = document.querySelector("#question");
+      const message = document.querySelector("#message");
+      const buttons = document.querySelector("#buttons");
+      const noButton = document.querySelector("#no-button");
+      const yesButton = document.querySelector("#yes-button");
+
+      const positions = ["top-left", "top-right", "bottom-right", "bottom-left"];
+      let nextPosition = 0;
+
+      noButton.addEventListener("click", () => {
+        const position = positions[nextPosition];
+        card.dataset.position = position;
+
+        if (window.matchMedia("(min-width: 481px)").matches) {
+          card.style.left = position.includes("left") ? "24px" : "auto";
+          card.style.right = position.includes("right") ? "24px" : "auto";
+          card.style.top = position.startsWith("top") ? "24px" : "auto";
+          card.style.bottom = position.startsWith("bottom") ? "24px" : "auto";
+          card.style.transform = "none";
+        }
+
+        nextPosition = (nextPosition + 1) % positions.length;
+      });
+
+      yesButton.addEventListener("click", () => {
+        question.textContent = "Good! 💖";
+        message.textContent = "I knew you missed me!";
+        buttons.hidden = true;
+        card.removeAttribute("data-position");
+        card.removeAttribute("style");
+      });
+    </script>
+  </body>
+</html>
